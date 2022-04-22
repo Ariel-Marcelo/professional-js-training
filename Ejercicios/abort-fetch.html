@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <title>Abort Fetch</title>
+  </head>
+  <body>
+    <a href="/ejercicios/">Go back</a>
+    <p><em>Abre la consola</em></p>
+
+    <img id="huge-image" height="400" />
+    <button id="load">Load HUGE Image</button>
+    <button id="stop" disabled>Stop Fetching</button>
+
+    <script>
+      const url =
+        "https://images.pexels.com/photos/974470/nature-stars-milky-way-galaxy-974470.jpeg?q=100";
+      const img = document.getElementById("huge-image");
+      const loadButton = document.getElementById("load");
+      const stopButton = document.getElementById("stop");
+
+      let controller;
+
+      function startLoading() {
+        loadButton.disabled = true;
+        loadButton.innerText = "Loading...";
+        stopButton.disabled = false;
+      }
+      function stopLoading() {
+        loadButton.disabled = false;
+        loadButton.innerText = "Load HUGE Image";
+        stopButton.disabled = true;
+      }
+
+      loadButton.onclick = async function () {
+        startLoading();
+
+        controller = new AbortController();
+        try {
+          const response = await fetch(url, {
+            signal: controller.signal, // le pasamos la señal para que aborte la petición
+          }); // fetch() returns a promise
+          const blob = await response.blob(); // blob is a Blob object que es el binario de la imagen que es la petición
+          const img = URL.createObjectURL(blob); // crea una url para la imagen
+        } catch (error) {
+          console.log(error.message); // el fetch siempre manda un error al cancelarse error que capturamos y escribimos en consola
+        }
+
+        stopLoading();
+      };
+
+      stopButton.onclick = function () {
+        controller.abort();
+        stopLoading();
+      };
+    </script>
+  </body>
+</html>
