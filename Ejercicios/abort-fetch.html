@@ -39,7 +39,8 @@
             signal: controller.signal, // le pasamos la señal para que aborte la petición
           }); // fetch() returns a promise
           const blob = await response.blob(); // blob is a Blob object que es el binario de la imagen que es la petición
-          const img = URL.createObjectURL(blob); // crea una url para la imagen
+          const imgUrl = URL.createObjectURL(blob); // crea una url para la imagen
+          img.src = imgUrl; // le asigna la url a la imagen
         } catch (error) {
           console.log(error.message); // el fetch siempre manda un error al cancelarse error que capturamos y escribimos en consola
         }
